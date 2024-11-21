@@ -1,7 +1,11 @@
 import ItemDetailProvider from "./ItemDetailProvider";
-
+import UserProvider from "../User/UserProvider";
 function ItemDetail() {
-  return <ItemDetailProvider />;
+  return (
+    <UserProvider>
+      <ItemDetailProvider />
+    </UserProvider>
+  );
 }
 
 export default ItemDetail;

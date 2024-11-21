@@ -111,8 +111,7 @@ function ItemDetailToolBar({
         handleClose={() => setShowRemoveModal(false)}
         userList={userList}
         handlerMap={{
-          removeMember: (user) =>
-            handleRemoveMember({ id: shoppingList.id, name: user }),
+          removeMember: (user) => handleRemoveMember(listId, user),
         }}
       />
     </div>

@@ -46,6 +46,7 @@ function OverviewProvider() {
         state: "active",
         owner: loggedInUser,
         memberList: [],
+        itemList: [],
       };
       return [...current, newList];
     });

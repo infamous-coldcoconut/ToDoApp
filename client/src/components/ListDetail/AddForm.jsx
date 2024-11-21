@@ -12,7 +12,7 @@ function AddForm({ show, handleClose, userList, handlerMap }) {
           e.stopPropagation();
           const formData = new FormData(e.target);
           const values = Object.fromEntries(formData);
-          handlerMap.addMember({ memberId: values.memberId });
+          handlerMap.addMember(values.memberId);
           handleClose();
         }}
       >

@@ -1,13 +1,14 @@
 import React, { createContext, useState, useContext, useMemo } from "react";
 import ItemDetailToolBar from "./ItemDetailToolBar";
 import ItemDetailList from "./ItemDetailList";
+import UserList from "../User/UserList";
 import { UserContext } from "../User/UserProvider";
 
 export const ItemDetailContext = createContext();
 
 function ItemDetailProvider() {
   const [showResolved, setShowResolved] = useState(false);
-  const { loggedInUser } = useContext(UserContext);
+  const { userList, loggedInUser } = useContext(UserContext);
 
   const [data, setLists] = useState([
     {
@@ -143,6 +144,7 @@ function ItemDetailProvider() {
   return (
     <ItemDetailContext.Provider
       value={{
+        data,
         filteredItems,
         handleAddItem,
         toggleItemStatus,
@@ -169,6 +171,8 @@ function ItemDetailProvider() {
         toggleItemStatus={toggleItemStatus}
         currentUserId={loggedInUser}
       />
+
+      <UserList userList={userList} currentUserId={loggedInUser} />
     </ItemDetailContext.Provider>
   );
 }

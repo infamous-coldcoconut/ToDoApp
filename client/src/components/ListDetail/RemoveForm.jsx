@@ -12,7 +12,7 @@ function RemoveForm({ show, handleClose, userList, handlerMap }) {
           e.stopPropagation();
           const formData = new FormData(e.target);
           const values = Object.fromEntries(formData);
-          handlerMap.removeMember({ memberId: values.memberId });
+          handlerMap.removeMember(values.memberId);
           handleClose();
         }}
       >
