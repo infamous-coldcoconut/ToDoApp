@@ -20,7 +20,7 @@ function OverviewCard({
   const isOwner = shoppingList.owner === currentUserId;
 
   return (
-    <Card style={{ width: "18rem" }}>
+    <Card style={{ width: "22rem" }}>
       <div
         onClick={() => {
           navigate(`/listDetail?id=${shoppingList.id}`);
@@ -28,10 +28,19 @@ function OverviewCard({
         style={{ cursor: "pointer" }}
       >
         <Card.Body>
-          <p>{shoppingList.name}</p>
-          <div
+          <h2>{shoppingList.name}</h2>
+          <p
             style={{
               display: "grid",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {shoppingList.description}
+          </p>
+          <div
+            style={{
+              display: "flex",
               gap: "2px",
               justifyContent: "center",
               alignItems: "center",

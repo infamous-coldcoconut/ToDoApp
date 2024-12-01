@@ -11,51 +11,62 @@ function OverviewProvider() {
     {
       id: "fs01",
       name: "First shoppingList",
-      state: "active",
+      description: "Ahoj",
+      isActive: true,
       owner: "1",
       memberList: ["2"],
     },
     {
       id: "fs02",
       name: "second shoppingList",
-      state: "archived",
+      description: "Ahoj2",
+      isActive: false,
       owner: "1",
       memberList: ["2", "3"],
     },
     {
       id: "fs03",
       name: "third shoppingList",
-      state: "active",
+      description: "Ahoj2",
+      isActive: false,
       owner: "3",
-      memberList: [],
+      memberList: "Ahoj2",
     },
     {
       id: "fs04",
       name: "forth shoppingList",
-      state: "archived",
+      description: "Ahoj2",
+      isActive: true,
       owner: "3",
       memberList: ["1"],
     },
   ]);
 
-  function handleCreate() {
+  // function handleCreate() {
+  //   setListOverviewCard((current) => {
+  //     const newList = {
+  //       id: Math.random().toString(),
+  //       name: "New List",
+  //       description: "",
+  //       isActive: true,
+  //       owner: loggedInUser,
+  //       memberList: [],
+  //       itemList: [],
+  //     };
+  //     return [...current, newList];
+  //   });
+  // }
+
+  function handleCreate(dtoIn) {
     setListOverviewCard((current) => {
-      const newList = {
-        id: Math.random().toString(),
-        name: "New List",
-        state: "active",
-        owner: loggedInUser,
-        memberList: [],
-        itemList: [],
-      };
-      return [...current, newList];
+      return [...current, dtoIn]; // Directly add the new list passed from the form
     });
   }
 
   function handleArchive(dtoIn) {
     setListOverviewCard((current) => {
       const itemIndex = current.findIndex((item) => item.id === dtoIn.id);
-      current[itemIndex] = { ...current[itemIndex], state: "archived" };
+      current[itemIndex] = { ...current[itemIndex], isActive: false };
       return current.slice();
     });
   }
@@ -85,7 +96,7 @@ function OverviewProvider() {
     } else {
       return listOverviewCard.filter(
         (item) =>
-          item.state === "active" &&
+          item.isActive === true &&
           (item.owner === loggedInUser ||
             item.memberList?.includes(loggedInUser))
       );
@@ -98,6 +109,7 @@ function OverviewProvider() {
         handleCreate={handleCreate}
         showArchive={showArchive}
         setShowArchive={setShowArchive}
+        loggedInUser={loggedInUser}
       />
       <OverviewList
         OverviewList={filteredToDoListList}

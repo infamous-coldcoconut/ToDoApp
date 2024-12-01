@@ -88,10 +88,7 @@ function ItemDetailToolBar({
       <AddItemForm
         show={showAddItemModal}
         handleClose={() => setShowAddItemModal(false)}
-        data={shoppingList}
         handlerMap={{
-          // addMember: (user) =>
-          //   handleAddMember({ id: selectedList.id, memberId: user }),
           addItem: (item) => handleAddItem(listId, item),
         }}
       />
@@ -100,8 +97,6 @@ function ItemDetailToolBar({
         handleClose={() => setShowAddModal(false)}
         userList={userList}
         handlerMap={{
-          // addMember: (user) =>
-          //   handleAddMember({ id: selectedList.id, memberId: user }),
           addMember: (user) => handleAddMember(listId, user),
         }}
       />

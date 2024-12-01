@@ -14,6 +14,7 @@ function ItemDetailProvider() {
     {
       id: "fs01",
       name: "First shoppingList",
+      description: "Ahoj",
       owner: "1",
       memberList: ["2", "3"],
       itemList: [
@@ -32,6 +33,7 @@ function ItemDetailProvider() {
     {
       id: "fs02",
       name: "Second shoppingList",
+      description: "Ahoj",
       owner: "1",
       memberList: ["2"],
       itemList: [
