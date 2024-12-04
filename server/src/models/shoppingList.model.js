@@ -44,7 +44,7 @@ const ShoppingListSchema = mongoose.Schema(
     },
   },
   {
-    timestamp: true,
+    timestamps: true,
   }
 );
 
