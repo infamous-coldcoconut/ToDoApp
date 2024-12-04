@@ -1,5 +1,16 @@
 import ShoppingList from "../../models/shoppingList.model.js";
-import User from "../../models/user.model.js";
+import {
+  createShoppingListSchema,
+  updateShoppingListSchema,
+} from "../../validation/shoppingList.validation.js";
+
+const validateInput = (schema, data) => {
+  const { error, value } = schema.validate(data);
+  if (error) {
+    throw new Error(error.details[0].message);
+  }
+  return value;
+};
 
 const getShoppingLists = async (req, res) => {
   try {
@@ -14,6 +25,9 @@ const getShoppingList = async (req, res) => {
   try {
     const { id } = req.params;
     const shoppingList = await ShoppingList.findById(id);
+    if (!shoppingList) {
+      return res.status(404).json({ message: "ShoppingList not found" });
+    }
     res.status(200).json(shoppingList);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -22,10 +36,12 @@ const getShoppingList = async (req, res) => {
 
 const createShoppingList = async (req, res) => {
   try {
-    const shoppingList = await ShoppingList.create(req.body);
+    const validatedData = validateInput(createShoppingListSchema, req.body);
+
+    const shoppingList = await ShoppingList.create(validatedData);
     res.status(200).json(shoppingList);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -33,16 +49,24 @@ const updateShoppingList = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const shoppingList = await ShoppingList.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const validatedData = validateInput(updateShoppingListSchema, req.body);
+
+    const shoppingList = await ShoppingList.findByIdAndUpdate(
+      id,
+      validatedData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!shoppingList) {
       return res.status(404).json({ message: "ShoppingList not found" });
     }
+
+    res.status(200).json(shoppingList);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -87,11 +111,6 @@ const inviteUser = async (req, res) => {
     const shoppingList = await ShoppingList.findById(listId);
     if (!shoppingList) {
       return res.status(404).json({ message: "Shopping list not found" });
-    }
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
     }
 
     if (shoppingList.memberList.includes(userId)) {
