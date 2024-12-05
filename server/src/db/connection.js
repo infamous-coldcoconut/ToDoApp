@@ -1,22 +1,22 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+// import { MongoClient, ServerApiVersion } from "mongodb";
 
-const uri = process.env.ATLAS_URI || "";
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
+// const uri = process.env.ATLAS_URI || "";
+// const client = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   },
+// });
 
-try {
-  await client.connect();
-  await client.db("admin").command({ ping: 1 });
-  console.log("You successfully connect to MONGODB yey");
-} catch (err) {
-  console.error(err);
-}
+// try {
+//   await client.connect();
+//   await client.db("admin").command({ ping: 1 });
+//   console.log("You successfully connect to MONGODB yey");
+// } catch (err) {
+//   console.error(err);
+// }
 
-let db = client.db("todoappdb");
+// let db = client.db("todoappdb");
 
-export default db;
+// export default db;

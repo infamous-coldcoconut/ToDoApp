@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
 import shoppingListRoutes from "./src/routes/shoppingList.route.js";
-import userRoutes from "./src/routes/user.route.js";
 import itemRoutes from "./src/routes/item.route.js";
+import mongoose from "mongoose";
+import "dotenv/config";
 
 const PORT = process.env.PORT || 5050;
 const CONNECTION = process.env.CONNECTION;
@@ -12,7 +13,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/user", userRoutes);
 app.use("/shoppingList", shoppingListRoutes);
 app.use("/itemRoutes", itemRoutes);
 
