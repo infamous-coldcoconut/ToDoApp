@@ -6,7 +6,7 @@ function OverviewList({
   handleArchive,
   handleDelete,
   handleNameChange,
-  currentUserId,
+  loggedInUser,
 }) {
   return (
     <Container>
@@ -18,7 +18,7 @@ function OverviewList({
             handleArchive={handleArchive}
             handleDelete={handleDelete}
             handleNameChange={handleNameChange}
-            currentUserId={currentUserId}
+            loggedInUser={loggedInUser}
           />
         ))}
       </div>

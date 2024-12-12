@@ -11,7 +11,6 @@ function UserList({ currentUserId }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const listId = queryParams.get("id");
-  console.log(data);
   const selectedList = data.find((list) => list.id === listId);
 
   return (

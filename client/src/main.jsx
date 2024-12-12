@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
+import Landing from "./Landing.jsx";
 
 import * as React from "react";
 import * as ReactDom from "react-dom/client";
@@ -14,6 +14,8 @@ import UserProvider from "./components/User/UserProvider.jsx";
 import OverviewProvider from "./components/Overview/OverviewProvider.jsx";
 import ListDetail from "./components/ListDetail/ItemDetail.jsx";
 import ListDetailProvider from "./components/ListDetail/ItemDetailProvider.jsx";
+import Login from "./components/Auth/login.jsx";
+import Register from "./components/Auth/Register.jsx";
 
 const router = createBrowserRouter([
   {
@@ -25,8 +27,7 @@ const router = createBrowserRouter([
         element: <OverviewProvider />,
       },
       {
-        path: "/listDetail",
-        // element: <ListDetailProvider />,
+        path: "listDetail",
         element: (
           <ListDetailProvider>
             <ListDetail />
@@ -34,6 +35,14 @@ const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
   },
   {
     path: "*",

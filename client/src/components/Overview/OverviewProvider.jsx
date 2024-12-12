@@ -1,107 +1,75 @@
-import { useState, useMemo, useContext } from "react";
+import { useState, useMemo, useContext, useEffect } from "react";
 import OverviewToolBar from "./OverviewToolBar";
 import OverviewList from "./OverviewList";
 import { UserContext } from "../User/UserProvider";
+import ShoppingListServices from "../Services/shoppingListServices";
 
 function OverviewProvider() {
-  const [showArchive, setShowArchive] = useState(false);
+  const [showArchive, setShowArchive] = useState();
   const { loggedInUser } = useContext(UserContext);
+  const [filterOption, setFilterOption] = useState("all");
+  const [shoppingLists, setShoppingLists] = useState([]);
 
-  const [listOverviewCard, setListOverviewCard] = useState([
-    {
-      id: "fs01",
-      name: "First shoppingList",
-      description: "Ahoj",
-      isActive: true,
-      owner: "1",
-      memberList: ["2"],
-    },
-    {
-      id: "fs02",
-      name: "second shoppingList",
-      description: "Ahoj2",
-      isActive: false,
-      owner: "1",
-      memberList: ["2", "3"],
-    },
-    {
-      id: "fs03",
-      name: "third shoppingList",
-      description: "Ahoj2",
-      isActive: false,
-      owner: "3",
-      memberList: "Ahoj2",
-    },
-    {
-      id: "fs04",
-      name: "forth shoppingList",
-      description: "Ahoj2",
-      isActive: true,
-      owner: "3",
-      memberList: ["1"],
-    },
-  ]);
-
-  // function handleCreate() {
-  //   setListOverviewCard((current) => {
-  //     const newList = {
-  //       id: Math.random().toString(),
-  //       name: "New List",
-  //       description: "",
-  //       isActive: true,
-  //       owner: loggedInUser,
-  //       memberList: [],
-  //       itemList: [],
-  //     };
-  //     return [...current, newList];
-  //   });
-  // }
-
-  function handleCreate(dtoIn) {
-    setListOverviewCard((current) => {
-      return [...current, dtoIn]; // Directly add the new list passed from the form
-    });
-  }
-
-  function handleArchive(dtoIn) {
-    setListOverviewCard((current) => {
-      const itemIndex = current.findIndex((item) => item.id === dtoIn.id);
-      current[itemIndex] = { ...current[itemIndex], isActive: false };
-      return current.slice();
-    });
-  }
-
-  function handleDelete(dtoIn) {
-    setListOverviewCard((current) => {
-      const itemIndex = current.findIndex((item) => item.id === dtoIn.id);
-      current.splice(itemIndex, 1);
-      return current.slice();
-    });
-  }
-
-  function handleNameChange(dtoIn) {
-    setListOverviewCard((current) =>
-      current.map((item) =>
-        item.id === dtoIn.id ? { ...item, name: dtoIn.name } : item
-      )
-    );
-  }
+  useEffect(() => {
+    if (loggedInUser) {
+      ShoppingListServices.getShoppingLists(loggedInUser.id)
+        .then((res) => {
+          setShoppingLists(res.data);
+        })
+        .catch((error) =>
+          console.error("Error fetching shopping lists", error)
+        );
+    }
+  }, [loggedInUser]);
 
   const filteredToDoListList = useMemo(() => {
-    if (showArchive) {
-      return listOverviewCard.filter(
-        (item) =>
-          item.owner === loggedInUser || item.memberList?.includes(loggedInUser)
-      );
-    } else {
-      return listOverviewCard.filter(
-        (item) =>
-          item.isActive === true &&
-          (item.owner === loggedInUser ||
-            item.memberList?.includes(loggedInUser))
-      );
+    if (filterOption === "all") {
+      return shoppingLists;
+    } else if (filterOption === "active") {
+      return shoppingLists.filter((list) => list.isActive === true);
+    } else if (filterOption === "archived") {
+      return shoppingLists.filter((list) => list.isActive === false);
     }
-  }, [showArchive, listOverviewCard, loggedInUser]);
+  }, [filterOption, shoppingLists]);
+
+  const handleCreate = async (data) => {
+    try {
+      const res = await ShoppingListServices.createShoppingList(
+        data,
+        loggedInUser.id
+      );
+      setShoppingLists((prevLists) => [...prevLists, res.data]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleNameChange = async (data) => {
+    console.log("Updating shopping list with ID:", data.id);
+    try {
+      await ShoppingListServices.updateShoppingList(
+        data.id,
+        { name: data.name, description: data.description },
+        loggedInUser.id
+      );
+      ShoppingListServices.getShoppingLists(loggedInUser.id)
+        .then((res) => {
+          setShoppingLists(res.data);
+        })
+        .catch((error) =>
+          console.error("Error fetching updated shopping lists", error)
+        );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleDelete = async () => {
+    try {
+      await ShoppingListServices.deleteShoppingList(loggedInUser.id);
+      setShoppingLists((prevLists) => [...prevLists]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -110,13 +78,13 @@ function OverviewProvider() {
         showArchive={showArchive}
         setShowArchive={setShowArchive}
         loggedInUser={loggedInUser}
+        setFilterOption={setFilterOption}
       />
       <OverviewList
         OverviewList={filteredToDoListList}
-        handleArchive={handleArchive}
-        handleDelete={handleDelete}
         handleNameChange={handleNameChange}
-        currentUserId={loggedInUser}
+        handleDelete={handleDelete}
+        loggedInUser={loggedInUser}
       />
     </>
   );

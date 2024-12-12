@@ -13,15 +13,15 @@ import {
 } from "../controllers/shoppingListController/shoppingList.controller.js";
 const router = express.Router();
 
-router.get("/list", getShoppingLists);
+router.post("/list", getShoppingLists);
 router.get("/get/:id", getShoppingList);
 router.post("/create", createShoppingList);
 router.post("/update/:id", updateShoppingList);
 router.post("/archive/:id", archiveShoppingList);
 router.post("/delete/:id", deleteShoppingList);
 
-router.post("/:listId/invite/:id", inviteUser);
-router.delete("/:listId/remove/:id", removeUser);
-router.delete("/:listId/remove", removeYourSelf);
+router.post("/:listId/invite", inviteUser);
+router.post("/:listId/remove", removeUser);
+router.post("/:listId/remove", removeYourSelf);
 
 export default router;

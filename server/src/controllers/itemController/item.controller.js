@@ -1,19 +1,19 @@
 import ShoppingList from "../../models/shoppingList.model.js";
 
-const getItems = async (req, res) => {
-  try {
-    const { listId } = req.params;
+// const getItems = async (req, res) => {
+//   try {
+//     const { listId } = req.params;
 
-    const shoppingList = await ShoppingList.findById(listId);
-    if (!shoppingList) {
-      return res.status(404).json({ message: "ShoppingList not found" });
-    }
+//     const shoppingList = await ShoppingList.findById(listId);
+//     if (!shoppingList) {
+//       return res.status(404).json({ message: "ShoppingList not found" });
+//     }
 
-    res.status(200).json(shoppingList.itemList);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+//     res.status(200).json(shoppingList.itemList);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 const addItem = async (req, res) => {
   try {
@@ -37,7 +37,7 @@ const addItem = async (req, res) => {
 const updateItem = async (req, res) => {
   try {
     const { listId, itemId } = req.params;
-    const { name, resolved } = req.body;
+    const { name } = req.body;
 
     const shoppingList = await ShoppingList.findById(listId);
     if (!shoppingList) {
@@ -52,9 +52,6 @@ const updateItem = async (req, res) => {
     if (name !== undefined) {
       item.name = name;
     }
-    if (resolved !== undefined) {
-      item.resolved = resolved;
-    }
 
     await shoppingList.save();
     res.status(200).json(shoppingList);
@@ -67,6 +64,7 @@ const setItemResolved = async (req, res) => {
   try {
     const { listId, itemId } = req.params;
     const shoppingList = await ShoppingList.findById(listId);
+
     if (!shoppingList) {
       return res.status(404).json({ message: "ShoppingList not found" });
     }
@@ -106,4 +104,4 @@ const deleteItem = async (req, res) => {
   }
 };
 
-export { getItems, addItem, updateItem, setItemResolved, deleteItem };
+export { /*getItems,*/ addItem, updateItem, setItemResolved, deleteItem };

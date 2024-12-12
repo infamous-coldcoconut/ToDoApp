@@ -4,17 +4,12 @@ import {
   updateShoppingListSchema,
 } from "../../validation/shoppingList.validation.js";
 
-const validateInput = (schema, data) => {
-  const { error, value } = schema.validate(data);
-  if (error) {
-    throw new Error(error.details[0].message);
-  }
-  return value;
-};
-
 const getShoppingLists = async (req, res) => {
   try {
-    const shoppingLists = await ShoppingList.find({});
+    const { userId } = req.body;
+    const shoppingLists = await ShoppingList.find({
+      $or: [{ owner: userId }, { memberList: userId }],
+    });
     res.status(200).json(shoppingLists);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -36,10 +31,27 @@ const getShoppingList = async (req, res) => {
 
 const createShoppingList = async (req, res) => {
   try {
-    const validatedData = validateInput(createShoppingListSchema, req.body);
+    const { error, value } = createShoppingListSchema.validate(req.body);
 
-    const shoppingList = await ShoppingList.create(validatedData);
-    res.status(200).json(shoppingList);
+    if (error) {
+      return res.status(400).json({
+        message: "Validation errors.",
+        errors: error.details.map((err) => err.message),
+      });
+    }
+
+    const { name, description, owner, memberList, itemList, isActive } = value;
+    const newList = new ShoppingList({
+      name,
+      description,
+      owner,
+      memberList,
+      itemList,
+      isActive,
+    });
+
+    await newList.save();
+    res.status(201).json(newList);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -48,17 +60,18 @@ const createShoppingList = async (req, res) => {
 const updateShoppingList = async (req, res) => {
   try {
     const { id } = req.params;
+    const { error, value } = updateShoppingListSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: "Validation errors.",
+        errors: error.details.map((err) => err.message),
+      });
+    }
 
-    const validatedData = validateInput(updateShoppingListSchema, req.body);
-
-    const shoppingList = await ShoppingList.findByIdAndUpdate(
-      id,
-      validatedData,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const shoppingList = await ShoppingList.findByIdAndUpdate(id, value, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!shoppingList) {
       return res.status(404).json({ message: "ShoppingList not found" });
@@ -79,9 +92,13 @@ const archiveShoppingList = async (req, res) => {
       return res.status(404).json({ message: "ShoppingList not found" });
     }
 
-    shoppingList.isActive = !shoppingList.isActive;
-    await shoppingList.save();
-    res.status(200).json(shoppingList);
+    const updatedList = await ShoppingList.findByIdAndUpdate(
+      id,
+      { isActive: !shoppingList.isActive },
+      { new: true }
+    );
+
+    res.status(200).json(updatedList);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -130,11 +147,16 @@ const inviteUser = async (req, res) => {
 
 const removeUser = async (req, res) => {
   try {
-    const { listId, userId } = req.params;
+    const { listId } = req.params;
+    const { userId } = req.body;
 
     const shoppingList = await ShoppingList.findById(listId);
     if (!shoppingList) {
       return res.status(404).json({ message: "Shopping list not found" });
+    }
+
+    if (!shoppingList.memberList.includes(userId)) {
+      return res.status(400).json({ message: "User is not already a member" });
     }
 
     const index = shoppingList.memberList.indexOf(userId);
@@ -179,6 +201,46 @@ const removeYourSelf = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// const removeUserOrYourself = async (req, res) => {
+//   try {
+//     const { listId } = req.params;
+//     let { userId } = req.body;
+
+//     const shoppingList = await ShoppingList.findById(listId);
+//     if (!shoppingList) {
+//       return res.status(404).json({ message: "Shopping list not found" });
+//     }
+
+//     if (!userId || shoppingList.owner !== req.body.currentUserId) {
+//       userId = req.body.currentUserId;
+//     }
+
+//     if (!shoppingList.memberList.includes(userId)) {
+//       return res
+//         .status(400)
+//         .json({ message: "User is not a member of this list" });
+//     }
+
+//     // Remove the user
+//     const index = shoppingList.memberList.indexOf(userId);
+//     if (index === -1) {
+//       return res.status(404).json({ message: "User not in the member list" });
+//     }
+
+//     shoppingList.memberList.splice(index, 1);
+//     await shoppingList.save();
+
+//     const message =
+//       userId === req.body.currentUserId
+//         ? "You have successfully removed yourself from the shopping list"
+//         : "User removed successfully";
+
+//     res.status(200).json({ message, shoppingList });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 export {
   createShoppingList,

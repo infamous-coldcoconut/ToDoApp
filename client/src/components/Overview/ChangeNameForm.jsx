@@ -11,7 +11,8 @@ function NameChangeForm({ show, handleClose, data, handlerMap }) {
           e.stopPropagation();
           const formData = new FormData(e.target);
           const newName = formData.get("name");
-          handlerMap.updateName(newName);
+          const newDescription = formData.get("description");
+          handlerMap.updateName(newName, newDescription);
           handleClose();
         }}
       >
@@ -24,6 +25,15 @@ function NameChangeForm({ show, handleClose, data, handlerMap }) {
             type="text"
             name="name"
             defaultValue={data.name}
+            required
+          />
+        </Modal.Body>
+        <Modal.Body>
+          <Form.Label>Description</Form.Label>
+          <Form.Control
+            type="text"
+            name="description"
+            defaultValue={data.description}
             required
           />
         </Modal.Body>

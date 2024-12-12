@@ -11,11 +11,10 @@ function Addlist({ show, handleClose, handlerMap, loggedInUser }) {
           e.stopPropagation();
           const formData = new FormData(e.target);
           const newList = {
-            id: `list${Date.now()}`,
             name: formData.get("name"),
             description: formData.get("description"),
             isActive: true,
-            owner: loggedInUser,
+            owner: loggedInUser.id,
             memberList: [],
             itemList: [],
           };

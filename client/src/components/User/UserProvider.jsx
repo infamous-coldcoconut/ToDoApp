@@ -1,31 +1,16 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const UserContext = createContext();
 
 function UserProvider({ children }) {
-  const [loggedInUser, setLoggedInUser] = useState("");
-  const userMap = {
-    user1: {
-      id: "1",
-      name: "Dan",
-    },
-    user2: {
-      id: "2",
-      name: "Pepa",
-    },
-    user3: {
-      id: "3",
-      name: "Jahoda",
-    },
-    user4: {
-      id: "4",
-      name: "Mango",
-    },
-  };
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("appUser"));
+    setLoggedInUser(user);
+  }, []);
 
   const value = {
-    userMap,
-    userList: Object.keys(userMap).map((userId) => userMap[userId]),
     loggedInUser,
     setLoggedInUser,
   };

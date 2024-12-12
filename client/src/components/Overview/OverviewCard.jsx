@@ -12,12 +12,14 @@ function OverviewCard({
   shoppingList,
   handleNameChange,
   handleDelete,
-  currentUserId,
+  loggedInUser,
 }) {
   const navigate = useNavigate();
   const [showNameChangeForm, setShowNameChangeForm] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const isOwner = shoppingList.owner === currentUserId;
+  const isOwner = shoppingList.owner === loggedInUser.id;
+  console.log(loggedInUser);
+  console.log(shoppingList._id);
 
   return (
     <Card style={{ width: "22rem" }}>
@@ -81,8 +83,12 @@ function OverviewCard({
         handleClose={() => setShowNameChangeForm(false)}
         data={shoppingList}
         handlerMap={{
-          updateName: (newName) =>
-            handleNameChange({ id: shoppingList.id, name: newName }),
+          updateName: (newName, newDescription) =>
+            handleNameChange({
+              id: shoppingList._id,
+              name: newName,
+              description: newDescription,
+            }),
         }}
       />
 

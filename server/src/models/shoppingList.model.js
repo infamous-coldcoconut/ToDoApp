@@ -50,5 +50,9 @@ const ShoppingListSchema = new mongoose.Schema(
 
 ShoppingListSchema.index({ owner: 1 });
 
-const ShoppingList = mongoose.model("ShoppingList", ShoppingListSchema);
+const ShoppingList = mongoose.model(
+  "ShoppingList",
+  ShoppingListSchema,
+  "shoppingList"
+);
 export default ShoppingList;
