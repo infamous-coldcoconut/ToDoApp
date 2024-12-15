@@ -7,10 +7,9 @@ function ItemDetailCard({
   handleDelete,
   handleResolved,
 }) {
-  const handleCheckboxChange = (itemId) => {
-    toggleItemStatus(shoppingList.id, itemId);
-  };
-  console.log(shoppingList);
+  // const handleCheckboxChange = (itemId) => {
+  //   toggleItemStatus(shoppingList.id, itemId);
+  // };
 
   return (
     <div style={{ display: "flex", gap: "20px" }}>

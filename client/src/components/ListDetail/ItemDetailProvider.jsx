@@ -11,6 +11,7 @@ import UserCard from "../User/UserCard";
 import { UserContext } from "../User/UserProvider";
 import ShoppingListServices from "../Services/shoppingListServices";
 import ItemServices from "../Services/itemServices";
+import AuthServices from "../Services/authServices";
 import { useParams } from "react-router-dom";
 
 export const ItemDetailContext = createContext();
@@ -21,33 +22,38 @@ function ItemDetailProvider() {
   const [filterOption, setFilterOption] = useState("Not resolved");
   const [items, setItems] = useState([]);
   const [shoppingList, setShoppingList] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const { id } = useParams();
 
-  console.log("LoggedInUser:", loggedInUser);
-  console.log("ID from params:", id, typeof id);
-
   useEffect(() => {
-    if (!loggedInUser || !id) return; // Exit early if dependencies are not ready
+    setLoading(true);
 
-    console.log("Fetching shopping list and items for shoppingListId:", id);
-
-    ShoppingListServices.getShoppingList(id)
-      .then((res) => {
-        console.log("Shopping List Data:", res.data);
-        setShoppingList(res.data); // Update shoppingList
-      })
-      .catch((error) => {
+    const fetchShoppingListData = async () => {
+      try {
+        const res = await ShoppingListServices.getShoppingList(id);
+        setShoppingList(res.data);
+      } catch (error) {
         console.error("Error fetching shopping list", error);
-      });
+      }
+    };
 
-    ItemServices.getItems(id)
-      .then((res) => {
+    const fetchItemsData = async () => {
+      try {
+        const res = await ItemServices.getItems(id);
         console.log("Items Data:", res.data);
         setItems(res.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching items", error);
+      }
+    };
+
+    fetchShoppingListData()
+      .then(() => {
+        return fetchItemsData();
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [loggedInUser, id]);
 
@@ -97,10 +103,9 @@ function ItemDetailProvider() {
   const handleDelete = async (data) => {
     try {
       await ItemServices.deleteItem(data, id);
-      // Refetch items after deletion
       ItemServices.getItems(id)
         .then((res) => {
-          setItems(res.data); // Refresh the items
+          setItems(res.data);
         })
         .catch((error) =>
           console.error("Error fetching updated shopping list items", error)
@@ -109,9 +114,6 @@ function ItemDetailProvider() {
       console.log(error);
     }
   };
-
-  console.log("pepa", shoppingList);
-
   return (
     <ItemDetailContext.Provider
       value={{
@@ -126,24 +128,30 @@ function ItemDetailProvider() {
         shoppingList,
       }}
     >
-      <ItemDetailToolBar
-        shoppingList={shoppingList}
-        id={id}
-        loggedInUser={loggedInUser}
-        handleAdd={handleAdd}
-        handleUpdate={handleUpdate}
-        handleDelete={handleDelete}
-        showResolved={showResolved}
-        setShowResolved={setShowResolved}
-      />
-      <ItemDetailCard
-        filteredItems={filteredItems}
-        shoppingList={shoppingList}
-        handleUpdate={handleUpdate}
-        handleDelete={handleDelete}
-        handleResolved={handleResolved}
-      />
-      <UserCard shoppingList={shoppingList} />
+      {!loading && shoppingList && items ? (
+        <>
+          <ItemDetailToolBar
+            shoppingList={shoppingList}
+            id={id}
+            loggedInUser={loggedInUser}
+            handleAdd={handleAdd}
+            handleUpdate={handleUpdate}
+            handleDelete={handleDelete}
+            showResolved={showResolved}
+            setShowResolved={setShowResolved}
+          />
+          <ItemDetailCard
+            filteredItems={filteredItems}
+            shoppingList={shoppingList}
+            handleUpdate={handleUpdate}
+            handleDelete={handleDelete}
+            handleResolved={handleResolved}
+          />
+          <UserCard shoppingList={shoppingList} />
+        </>
+      ) : (
+        <p>Loading...</p>
+      )}
     </ItemDetailContext.Provider>
   );
 }

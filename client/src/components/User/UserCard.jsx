@@ -1,9 +1,8 @@
 import Card from "react-bootstrap/Card";
 
 function UserCard({ shoppingList }) {
-  if (!shoppingList) {
-    return <div>Loading user data...</div>; // Optional loader message
-  }
+  console.log("Member List:", shoppingList.memberList);
+
   return (
     <div style={{ display: "flex", gap: "20px" }}>
       <Card style={{ width: "30 rem" }}>
@@ -21,9 +20,9 @@ function UserCard({ shoppingList }) {
               <div>
                 <strong>Owner:</strong> {shoppingList.owner}
               </div>
-              {shoppingList.memberList && shoppingList.memberList.length > 0 ? (
-                shoppingList.memberList.map((user) => (
-                  <div key={user.id}>{user.name}</div>
+              {shoppingList.memberList.length > 0 ? (
+                shoppingList.memberList.map((user, index) => (
+                  <div key={index}>{user.name}</div>
                 ))
               ) : (
                 <div>No members</div>

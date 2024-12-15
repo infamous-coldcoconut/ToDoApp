@@ -17,7 +17,7 @@ import { UserContext } from "../User/UserProvider";
 import { ItemDetailContext } from "./ItemDetailProvider";
 
 function ItemDetailToolBar({
-  shoppingListId,
+  shoppingList,
   loggedInUser,
   handleAdd,
   handleAddMember,
@@ -32,7 +32,7 @@ function ItemDetailToolBar({
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const listId = params.get("id");
-  const isOwner = selectedList.owner === loggedInUser.id;
+  const isOwner = shoppingList.owner === loggedInUser.id;
 
   return (
     <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>
@@ -88,7 +88,8 @@ function ItemDetailToolBar({
           addItem: (item) => handleAdd(listId, item),
         }}
       />
-      <AddForm
+
+      {/* <AddForm
         show={showAddModal}
         handleClose={() => setShowAddModal(false)}
         userList={userList}
@@ -104,7 +105,7 @@ function ItemDetailToolBar({
         handlerMap={{
           removeMember: (user) => handleRemoveMember(listId, user),
         }}
-      />
+      /> */}
     </div>
   );
 }
