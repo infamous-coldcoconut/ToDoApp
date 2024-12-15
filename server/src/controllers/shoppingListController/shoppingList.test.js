@@ -47,7 +47,7 @@ describe("POST /api/shoppingList", () => {
     const updatedList = {
       name: "Updated Shopping List",
       description: "Updated description",
-      owner: "updatedUserId123",
+      owner: "updatedUserId1234",
       memberList: ["userId123"],
       itemList: [],
       isActive: false,
