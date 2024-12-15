@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  // getItems,
+  getItems,
   addItem,
   updateItem,
   setItemResolved,
@@ -9,10 +9,10 @@ import {
 
 const router = express.Router();
 
-// router.get("/", getItems);
-router.post("/add", addItem);
-router.put("/update/:itemId", updateItem);
-router.patch("/:itemId/", setItemResolved);
-router.delete("/:itemId", deleteItem);
+router.get("/:listId/list", getItems);
+router.post("/:listId/add", addItem);
+router.post("/:listId/update/:itemId", updateItem);
+router.post("/:listId/:itemId/", setItemResolved);
+router.post("/:listId/delete/:itemId", deleteItem);
 
 export default router;

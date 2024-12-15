@@ -1,14 +1,9 @@
 import Card from "react-bootstrap/Card";
 
-function UserCard({ memberList, userMap }) {
-  const users = memberList
-    .map((userId) => {
-      const userKey = `user${userId}`;
-      return userMap[userKey];
-    })
-    .filter((user) => user !== undefined);
-  console.log("hello", users);
-
+function UserCard({ shoppingList }) {
+  if (!shoppingList) {
+    return <div>Loading user data...</div>; // Optional loader message
+  }
   return (
     <div style={{ display: "flex", gap: "20px" }}>
       <Card style={{ width: "30 rem" }}>
@@ -23,9 +18,16 @@ function UserCard({ memberList, userMap }) {
                 alignItems: "center",
               }}
             >
-              {users.map((user) => (
-                <div key={user.id}>{user.name}</div>
-              ))}
+              <div>
+                <strong>Owner:</strong> {shoppingList.owner}
+              </div>
+              {shoppingList.memberList && shoppingList.memberList.length > 0 ? (
+                shoppingList.memberList.map((user) => (
+                  <div key={user.id}>{user.name}</div>
+                ))
+              ) : (
+                <div>No members</div>
+              )}
             </div>
           </Card.Body>
         </div>

@@ -10,18 +10,13 @@ const PORT = process.env.PORT || 5050;
 const CONNECTION = process.env.CONNECTION;
 
 const app = express();
-const corsOptions = {
-  origin: "http://localhost:5173", // React app's URL
-  methods: "GET, POST, PUT, DELETE",
-  allowedHeaders: "Content-Type, Authorization",
-};
 
-app.use(cors(corsOptions)); // Apply CORS middleware
+app.use(cors());
 
 app.use(express.json());
 
 app.use("/shoppingList", shoppingListRoutes);
-app.use("/shoppingList", itemRoutes);
+app.use("/item", itemRoutes);
 app.use("/user", userRoutes);
 
 app.get("/test", (req, res) => {

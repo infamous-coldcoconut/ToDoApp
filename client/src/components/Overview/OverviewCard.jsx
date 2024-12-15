@@ -11,6 +11,7 @@ import DeleteConfirmation from "../Form/DeleteConfirmation";
 function OverviewCard({
   shoppingList,
   handleNameChange,
+  handleArchive,
   handleDelete,
   loggedInUser,
 }) {
@@ -18,14 +19,12 @@ function OverviewCard({
   const [showNameChangeForm, setShowNameChangeForm] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const isOwner = shoppingList.owner === loggedInUser.id;
-  console.log(loggedInUser);
-  console.log(shoppingList._id);
 
   return (
     <Card style={{ width: "22rem" }}>
       <div
         onClick={() => {
-          navigate(`/listDetail?id=${shoppingList.id}`);
+          navigate(`/listDetail/${shoppingList._id}`);
         }}
         style={{ cursor: "pointer" }}
       >
@@ -60,7 +59,13 @@ function OverviewCard({
               </Button>
             )}
 
-            <Button size={"sm"} onClick={(e) => e.stopPropagation()}>
+            <Button
+              size={"sm"}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleArchive();
+              }}
+            >
               <Icon path={mdiArchive} size={1} />
             </Button>
             {isOwner && (
@@ -96,7 +101,7 @@ function OverviewCard({
         show={showDeleteConfirmation}
         handleClose={() => setShowDeleteConfirmation(false)}
         data={shoppingList}
-        handleDelete={handleDelete}
+        handleDelete={(id) => handleDelete(id)}
       />
     </Card>
   );

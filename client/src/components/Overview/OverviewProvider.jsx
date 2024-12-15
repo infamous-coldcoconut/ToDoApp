@@ -1,8 +1,10 @@
-import { useState, useMemo, useContext, useEffect } from "react";
+import { useState, useMemo, useContext, useEffect, createContext } from "react";
 import OverviewToolBar from "./OverviewToolBar";
 import OverviewList from "./OverviewList";
 import { UserContext } from "../User/UserProvider";
 import ShoppingListServices from "../Services/shoppingListServices";
+
+export const OverviewContext = createContext();
 
 function OverviewProvider() {
   const [showArchive, setShowArchive] = useState();
@@ -11,6 +13,7 @@ function OverviewProvider() {
   const [shoppingLists, setShoppingLists] = useState([]);
 
   useEffect(() => {
+    console.log("kokot", loggedInUser);
     if (loggedInUser) {
       ShoppingListServices.getShoppingLists(loggedInUser.id)
         .then((res) => {
@@ -62,10 +65,34 @@ function OverviewProvider() {
       console.log(error);
     }
   };
-  const handleDelete = async () => {
+
+  const handleArchive = async (data) => {
     try {
-      await ShoppingListServices.deleteShoppingList(loggedInUser.id);
-      setShoppingLists((prevLists) => [...prevLists]);
+      await ShoppingListServices.toggleShoppingListStatus(
+        data,
+        loggedInUser.id
+      );
+      ShoppingListServices.getShoppingLists(loggedInUser.id)
+        .then((res) => {
+          setShoppingLists(res.data);
+        })
+        .catch((error) =>
+          console.error("Error fetching updated shopping lists", error)
+        );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleDelete = async (data) => {
+    try {
+      await ShoppingListServices.deleteShoppingList(data, loggedInUser.id);
+      ShoppingListServices.getShoppingLists(loggedInUser.id)
+        .then((res) => {
+          setShoppingLists(res.data);
+        })
+        .catch((error) =>
+          console.error("Error fetching updated shopping lists", error)
+        );
     } catch (error) {
       console.log(error);
     }
@@ -78,12 +105,14 @@ function OverviewProvider() {
         showArchive={showArchive}
         setShowArchive={setShowArchive}
         loggedInUser={loggedInUser}
+        filterOption={filterOption}
         setFilterOption={setFilterOption}
       />
       <OverviewList
         OverviewList={filteredToDoListList}
         handleNameChange={handleNameChange}
         handleDelete={handleDelete}
+        handleArchive={handleArchive}
         loggedInUser={loggedInUser}
       />
     </>

@@ -13,7 +13,7 @@ function OverviewList({
       <div style={gridContainerStyle}>
         {OverviewList.map((shoppingList) => (
           <OverviewCard
-            key={shoppingList.id}
+            key={shoppingList._id}
             shoppingList={shoppingList}
             handleArchive={handleArchive}
             handleDelete={handleDelete}

@@ -21,7 +21,7 @@ function DeleteConfirmation({ show, handleClose, data, handleDelete }) {
           type="submit"
           variant="danger"
           onClick={() => {
-            handleDelete({ id: data.id });
+            handleDelete(data._id);
             handleClose();
           }}
         >

@@ -5,8 +5,8 @@ const getShoppingLists = (userId) => {
   return axios.post(SERVER_URL + "/list", { userId });
 };
 
-const getShoppingList = (id, userId) => {
-  return axios.post(SERVER_URL + "/get/" + id, { userId });
+const getShoppingList = (id) => {
+  return axios.get(SERVER_URL + "/get/" + id);
 };
 
 const createShoppingList = (data, userId) => {
@@ -34,8 +34,12 @@ const updateShoppingList = (id, data, userId) => {
   return axios.post(SERVER_URL + "/update/" + id, shoppingListData);
 };
 
+const toggleShoppingListStatus = (id, userId) => {
+  return axios.post(SERVER_URL + "/archive/" + id, { userId });
+};
+
 const deleteShoppingList = (id, userId) => {
-  return axios.post(SERVER_URL + "/delete/" + id);
+  return axios.post(SERVER_URL + "/delete/" + id, { userId });
 };
 
 const ShoppingListServices = {
@@ -43,6 +47,7 @@ const ShoppingListServices = {
   getShoppingList,
   createShoppingList,
   updateShoppingList,
+  toggleShoppingListStatus,
   deleteShoppingList,
 };
 

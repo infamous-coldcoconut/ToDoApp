@@ -11,6 +11,7 @@ function OverviewToolBar({
   showArchive,
   setShowArchive,
   loggedInUser,
+  filterOption,
   setFilterOption,
 }) {
   const [showAddListModal, setShowAddListModal] = useState(false);
@@ -25,13 +26,9 @@ function OverviewToolBar({
         <Icon path={mdiPlus} size={1} />
         Create
       </Button>
-      {/* <Button variant="primary" onClick={() => setShowArchive(!showArchive)}>
-        <Icon path={mdiFilter} size={1} />
-        {showArchive ? "Show Active" : "Show Archived"}
-      </Button> */}
       <Dropdown>
         <Dropdown.Toggle variant="success" id="dropdown-basic">
-          Dropdown Button
+          {filterOption}
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item onClick={() => handleFilterSelect("all")}>

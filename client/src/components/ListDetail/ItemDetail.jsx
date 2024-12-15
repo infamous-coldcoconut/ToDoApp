@@ -1,11 +1,8 @@
-import ItemDetailProvider from "./ItemDetailProvider";
-import UserProvider from "../User/UserProvider";
-function ItemDetail() {
-  return (
-    <UserProvider>
-      <ItemDetailProvider />
-    </UserProvider>
-  );
-}
+// import ItemDetailProvider from "./ItemDetailProvider";
+// import UserProvider from "../User/UserProvider";
+// import OverviewProvider from "../Overview/OverviewProvider";
+// function ItemDetail() {
+//   return <ItemDetailProvider />;
+// }
 
-export default ItemDetail;
+// export default ItemDetail;

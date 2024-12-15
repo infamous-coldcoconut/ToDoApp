@@ -12,8 +12,7 @@ import NoPage from "./NoPage.jsx";
 
 import UserProvider from "./components/User/UserProvider.jsx";
 import OverviewProvider from "./components/Overview/OverviewProvider.jsx";
-import ListDetail from "./components/ListDetail/ItemDetail.jsx";
-import ListDetailProvider from "./components/ListDetail/ItemDetailProvider.jsx";
+import ItemDetailProvider from "./components/ListDetail/ItemDetailProvider.jsx";
 import Login from "./components/Auth/login.jsx";
 import Register from "./components/Auth/Register.jsx";
 
@@ -27,12 +26,8 @@ const router = createBrowserRouter([
         element: <OverviewProvider />,
       },
       {
-        path: "listDetail",
-        element: (
-          <ListDetailProvider>
-            <ListDetail />
-          </ListDetailProvider>
-        ),
+        path: "listDetail/:id",
+        element: <ItemDetailProvider />,
       },
     ],
   },

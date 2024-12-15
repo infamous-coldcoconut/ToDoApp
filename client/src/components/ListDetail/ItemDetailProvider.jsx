@@ -1,180 +1,149 @@
-import React, { createContext, useState, useContext, useMemo } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useMemo,
+  useEffect,
+} from "react";
 import ItemDetailToolBar from "./ItemDetailToolBar";
-import ItemDetailList from "./ItemDetailList";
-import UserList from "../User/UserList";
+import ItemDetailCard from "./ItemDetailCard";
+import UserCard from "../User/UserCard";
 import { UserContext } from "../User/UserProvider";
+import ShoppingListServices from "../Services/shoppingListServices";
+import ItemServices from "../Services/itemServices";
+import { useParams } from "react-router-dom";
 
 export const ItemDetailContext = createContext();
 
 function ItemDetailProvider() {
   const [showResolved, setShowResolved] = useState(false);
-  const { userList, loggedInUser } = useContext(UserContext);
+  const { loggedInUser } = useContext(UserContext);
+  const [filterOption, setFilterOption] = useState("Not resolved");
+  const [items, setItems] = useState([]);
+  const [shoppingList, setShoppingList] = useState(null);
 
-  const [data, setLists] = useState([
-    {
-      id: "fs01",
-      name: "First shoppingList",
-      description: "Ahoj",
-      owner: "1",
-      memberList: ["2", "3"],
-      itemList: [
-        {
-          id: "item01",
-          name: "první úkol",
-          resolved: false,
-        },
-        {
-          id: "item02",
-          name: "druhý úkol",
-          resolved: true,
-        },
-      ],
-    },
-    {
-      id: "fs02",
-      name: "Second shoppingList",
-      description: "Ahoj",
-      owner: "1",
-      memberList: ["2"],
-      itemList: [
-        {
-          id: "item01",
-          name: "první úkol",
-          resolved: false,
-        },
-        {
-          id: "item02",
-          name: "druhý úkol",
-          resolved: true,
-        },
-      ],
-    },
-  ]);
+  const { id } = useParams();
 
-  // function isUserOwner(listId) {
-  //   const list = data.find((list) => list.id === listId);
-  //   return list?.owner === loggedInUser;
-  // }
+  console.log("LoggedInUser:", loggedInUser);
+  console.log("ID from params:", id, typeof id);
 
-  const isUserOwner = (id) => {
-    const list = data.find((list) => String(list.id) === String(id));
-    return list;
+  useEffect(() => {
+    if (!loggedInUser || !id) return; // Exit early if dependencies are not ready
+
+    console.log("Fetching shopping list and items for shoppingListId:", id);
+
+    ShoppingListServices.getShoppingList(id)
+      .then((res) => {
+        console.log("Shopping List Data:", res.data);
+        setShoppingList(res.data); // Update shoppingList
+      })
+      .catch((error) => {
+        console.error("Error fetching shopping list", error);
+      });
+
+    ItemServices.getItems(id)
+      .then((res) => {
+        console.log("Items Data:", res.data);
+        setItems(res.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching items", error);
+      });
+  }, [loggedInUser, id]);
+
+  const filteredItems = useMemo(() => {
+    if (filterOption === "all") {
+      return items;
+    } else if (filterOption === "resolved") {
+      return items.filter((item) => item.resolved === true);
+    } else if (filterOption === "Not resolved") {
+      return items.filter((item) => item.resolved === false);
+    }
+  }, [filterOption, items]);
+
+  const handleAdd = async (data) => {
+    try {
+      const res = await ItemServices.addItem(id, data);
+      setItems((prevItems) => [...prevItems, res.data]);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  function handleAddItem(listId, newItem) {
-    setLists((prevData) =>
-      prevData.map((list) =>
-        list.id === listId
-          ? { ...list, itemList: [...list.itemList, newItem] }
-          : list
-      )
-    );
-  }
+  const handleUpdate = async (data) => {
+    try {
+      const res = await ItemServices.updateItem(data, id);
+      setItems((prevItems) =>
+        prevItems.map((item) => (item._id === res.data._id ? res.data : item))
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  function toggleItemStatus(listId, itemId) {
-    setLists((prevData) =>
-      prevData.map((list) =>
-        list.id === listId
-          ? {
-              ...list,
-              itemList: list.itemList.map((item) =>
-                item.id === itemId
-                  ? { ...item, resolved: !item.resolved }
-                  : item
-              ),
-            }
-          : list
-      )
-    );
-  }
+  const handleResolved = async (data) => {
+    try {
+      await ItemServices.setItemResolved(data, id);
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item._id === data ? { ...item, resolved: !item.resolved } : item
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  function handleAddMember(listId, memberId) {
-    setLists((prevLists) =>
-      prevLists.map((list) =>
-        list.id === listId
-          ? { ...list, memberList: [...list.memberList, memberId] }
-          : list
-      )
-    );
-  }
+  const handleDelete = async (data) => {
+    try {
+      await ItemServices.deleteItem(data, id);
+      // Refetch items after deletion
+      ItemServices.getItems(id)
+        .then((res) => {
+          setItems(res.data); // Refresh the items
+        })
+        .catch((error) =>
+          console.error("Error fetching updated shopping list items", error)
+        );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  function handleRemoveMember(listId, memberId) {
-    setLists((prevLists) =>
-      prevLists.map((list) =>
-        list.id === listId
-          ? {
-              ...list,
-              memberList: list.memberList.filter((id) => id !== memberId),
-            }
-          : list
-      )
-    );
-  }
-
-  function handleSelfRemove(listId) {
-    setLists((prevLists) =>
-      prevLists.map((list) =>
-        list.id === listId
-          ? {
-              ...list,
-              memberList: list.memberList.filter((id) => id !== loggedInUser),
-            }
-          : list
-      )
-    );
-  }
-
-  const filteredItems = useMemo(
-    () =>
-      data.map((list) => ({
-        ...list,
-        itemList: list.itemList.filter((item) =>
-          showResolved ? true : !item.resolved
-        ),
-      })),
-    [showResolved, data]
-  );
-
-  // function updateMemberList(id, newMemberList) {
-  //   setLists((prevLists) =>
-  //     prevLists.map((list) =>
-  //       list.id === id ? { ...list, memberList: newMemberList } : list
-  //     )
-  //   );
-  // }
+  console.log("pepa", shoppingList);
 
   return (
     <ItemDetailContext.Provider
       value={{
-        data,
+        items,
         filteredItems,
-        handleAddItem,
-        toggleItemStatus,
-        handleAddMember,
-        handleRemoveMember,
+        handleAdd,
+        handleResolved,
+        handleUpdate,
+        handleDelete,
         showResolved,
         setShowResolved,
-        isUserOwner,
+        shoppingList,
       }}
     >
       <ItemDetailToolBar
-        // isOwner={isUserOwner}
-        shoppingList={data}
-        handleAddItem={handleAddItem}
-        handleAddMember={handleAddMember}
-        handleRemoveMember={handleRemoveMember}
-        handleSelfRemove={handleSelfRemove}
-        ///////////
+        shoppingList={shoppingList}
+        id={id}
+        loggedInUser={loggedInUser}
+        handleAdd={handleAdd}
+        handleUpdate={handleUpdate}
+        handleDelete={handleDelete}
         showResolved={showResolved}
         setShowResolved={setShowResolved}
       />
-      <ItemDetailList
-        ItemList={filteredItems}
-        toggleItemStatus={toggleItemStatus}
-        currentUserId={loggedInUser}
+      <ItemDetailCard
+        filteredItems={filteredItems}
+        shoppingList={shoppingList}
+        handleUpdate={handleUpdate}
+        handleDelete={handleDelete}
+        handleResolved={handleResolved}
       />
-
-      <UserList userList={userList} currentUserId={loggedInUser} />
+      <UserCard shoppingList={shoppingList} />
     </ItemDetailContext.Provider>
   );
 }

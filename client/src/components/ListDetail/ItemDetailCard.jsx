@@ -1,9 +1,16 @@
 import Card from "react-bootstrap/Card";
 
-function ItemDetailCard({ shoppingList, itemList, toggleItemStatus }) {
+function ItemDetailCard({
+  filteredItems,
+  shoppingList,
+  handleUpdate,
+  handleDelete,
+  handleResolved,
+}) {
   const handleCheckboxChange = (itemId) => {
     toggleItemStatus(shoppingList.id, itemId);
   };
+  console.log(shoppingList);
 
   return (
     <div style={{ display: "flex", gap: "20px" }}>
@@ -19,8 +26,8 @@ function ItemDetailCard({ shoppingList, itemList, toggleItemStatus }) {
                 alignItems: "center",
               }}
             >
-              {itemList.map((item) => (
-                <div key={item.id}>
+              {filteredItems.map((item) => (
+                <div key={item._id}>
                   <input
                     type="checkbox"
                     checked={item.resolved || false}
@@ -36,5 +43,14 @@ function ItemDetailCard({ shoppingList, itemList, toggleItemStatus }) {
     </div>
   );
 }
+
+const gridContainerStyle = {
+  display: "grid",
+  padding: "20px",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gap: "16px",
+  maxWidth: "960px",
+  margin: "0 auto",
+};
 
 export default ItemDetailCard;
