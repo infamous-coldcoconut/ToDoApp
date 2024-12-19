@@ -1,15 +1,27 @@
 import request from "supertest";
-import app from "../../../server";
-import ShoppingList from "../../models/shoppingList.model";
+import app from "../../server.js";
+import ShoppingList from "../models/shoppingList.model.js";
+import mongoose from "mongoose";
+import { jest } from "@jest/globals";
 
-jest.mock("../../models/shoppingList.model");
+jest.mock("../models/shoppingList.model.js");
 
-describe("POST /api/shoppingList", () => {
+describe("POST /shoppingList", () => {
+  beforeAll(async () => {
+    await mongoose.connect(process.env.CONNECTION, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  });
+
+  afterAll(async () => {
+    await mongoose.connection.close();
+  });
+
   it("should return all shopping lists for a user", async () => {
     const lists = [{ _id: "1", name: "Test Shopping List" }];
-    ShoppingList.find.mockImplementation(() => ({
-      find: jest.fn().mockResolvedValue(lists),
-    }));
+
+    ShoppingList.find.mockResolvedValue(lists);
 
     const response = await request(app).post("/shoppingList/list").send({
       userId: "fakeUserId123",
@@ -26,29 +38,29 @@ describe("POST /api/shoppingList", () => {
     const newList = {
       name: "New Shopping List",
       description: "New list description",
-      owner: "newUserId123",
+      owner: "64f9c2c4a8b0f42108c9d1e2",
       memberList: [],
       itemList: [],
       isActive: true,
     };
 
-    ShoppingList.create.mockImplementation(() => newList);
+    ShoppingList.create.mockResolvedValue({ _id: "1", ...newList });
 
     const response = await request(app)
       .post("/shoppingList/create")
       .send(newList);
 
     expect(response.status).toBe(201);
-    expect(response.body).toEqual(newList);
+    expect(response.body).toMatchObject(newList);
     expect(ShoppingList.create).toHaveBeenCalledWith(newList);
   });
 
   it("should update an existing shopping list", async () => {
     const updatedList = {
       name: "Updated Shopping List",
-      description: "Updated description",
-      owner: "updatedUserId1234",
-      memberList: ["userId123"],
+      description: "Groceries and Supplies",
+      owner: "64f9c2c4a8b0f42108c9d1e2",
+      memberList: ["64f9c2c4a8b0f42108c9d1e2"],
       itemList: [],
       isActive: false,
     };
