@@ -63,7 +63,7 @@ function OverviewCard({
               size={"sm"}
               onClick={(e) => {
                 e.stopPropagation();
-                handleArchive();
+                handleArchive(shoppingList);
               }}
             >
               <Icon path={mdiArchive} size={1} />

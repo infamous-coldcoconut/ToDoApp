@@ -69,9 +69,10 @@ function OverviewProvider() {
   const handleArchive = async (data) => {
     try {
       await ShoppingListServices.toggleShoppingListStatus(
-        data,
+        data._id,
         loggedInUser.id
       );
+
       ShoppingListServices.getShoppingLists(loggedInUser.id)
         .then((res) => {
           setShoppingLists(res.data);

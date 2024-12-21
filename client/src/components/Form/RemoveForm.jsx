@@ -3,7 +3,6 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
 function AddForm({ show, handleClose, userList, handlerMap }) {
-  console.log("User List in MemberList:", userList);
   return (
     <Modal show={show} onHide={handleClose}>
       <Form
@@ -12,23 +11,22 @@ function AddForm({ show, handleClose, userList, handlerMap }) {
           e.stopPropagation();
           const formData = new FormData(e.target);
           const values = Object.fromEntries(formData);
-          handlerMap.addMember(values.memberId);
+          handlerMap.removeMember(values.userId);
+
           handleClose();
         }}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Add member</Modal.Title>
+          <Modal.Title>Remove member</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Label>Member</Form.Label>
-          <Form.Select type="select" name="memberId" required>
-            {userList.map((user) => {
-              return (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              );
-            })}
+          <Form.Select name="userId" required>
+            {userList.map((user) => (
+              <option key={user._id} value={user._id}>
+                {user.name}
+              </option>
+            ))}
           </Form.Select>
         </Modal.Body>
         <Modal.Footer>

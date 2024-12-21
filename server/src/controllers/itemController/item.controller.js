@@ -36,8 +36,8 @@ const addItem = async (req, res) => {
 
 const updateItem = async (req, res) => {
   try {
-    const { listId, itemId } = req.params;
-    const { name } = req.body;
+    const { listId } = req.params;
+    const { itemId, name } = req.body;
 
     const shoppingList = await ShoppingList.findById(listId);
     if (!shoppingList) {
@@ -62,7 +62,8 @@ const updateItem = async (req, res) => {
 
 const setItemResolved = async (req, res) => {
   try {
-    const { listId, itemId } = req.params;
+    const { listId } = req.params;
+    const { itemId } = req.body;
     const shoppingList = await ShoppingList.findById(listId);
 
     if (!shoppingList) {

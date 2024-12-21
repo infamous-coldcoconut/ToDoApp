@@ -42,6 +42,13 @@ const deleteShoppingList = (id, userId) => {
   return axios.post(SERVER_URL + "/delete/" + id, { userId });
 };
 
+const inviteUser = (listId, userId) => {
+  return axios.post(SERVER_URL + `/${listId}/invite`, { userId });
+};
+
+const removeUser = (listId, userId) => {
+  return axios.post(SERVER_URL + `/${listId}/remove`, { userId });
+};
 const ShoppingListServices = {
   getShoppingLists,
   getShoppingList,
@@ -49,6 +56,8 @@ const ShoppingListServices = {
   updateShoppingList,
   toggleShoppingListStatus,
   deleteShoppingList,
+  inviteUser,
+  removeUser,
 };
 
 export default ShoppingListServices;

@@ -11,6 +11,8 @@ import {
 
 function NavBar() {
   const navigation = useNavigate();
+  const [darkMode, setDarkMode] = useState(false);
+
   const { loggedInUser } = useContext(UserContext);
 
   const handleLogout = () => {
@@ -18,13 +20,26 @@ function NavBar() {
     navigation("/login");
   };
 
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+    const htmlElement = document.querySelector("html");
+    htmlElement.setAttribute("data-bs-theme", darkMode ? "dark" : "light");
+  };
+
   return (
-    <div>
+    <div className={`App ${darkMode ? "theme-dark" : "theme-light"}`}>
       <Navbar className="navbar bg-body-tertiary">
         <Container>
           <Navbar.Brand href="/">ToDoApp</Navbar.Brand>
           <Navbar.Collapse className="justify-content-end">
             <Nav className="ml-auto">
+              <Navbar.Brand>
+                <Icon
+                  path={darkMode ? mdiToggleSwitchOffOutline : mdiToggleSwitch}
+                  size={2}
+                  onClick={toggleTheme}
+                />
+              </Navbar.Brand>
               {loggedInUser ? (
                 <NavDropdown
                   title={

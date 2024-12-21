@@ -19,7 +19,10 @@ const getShoppingLists = async (req, res) => {
 const getShoppingList = async (req, res) => {
   try {
     const { id } = req.params;
-    const shoppingList = await ShoppingList.findById(id);
+    const shoppingList = await ShoppingList.findById(id)
+      .populate("owner", "name")
+      .populate("memberList", "name");
+
     if (!shoppingList) {
       return res.status(404).json({ message: "ShoppingList not found" });
     }

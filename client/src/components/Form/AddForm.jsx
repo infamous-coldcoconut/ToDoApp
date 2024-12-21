@@ -2,8 +2,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-function RemoveForm({ show, handleClose, userList, handlerMap }) {
-  console.log(userList);
+function AddForm({ show, handleClose, userList, handlerMap }) {
   return (
     <Modal show={show} onHide={handleClose}>
       <Form
@@ -12,23 +11,22 @@ function RemoveForm({ show, handleClose, userList, handlerMap }) {
           e.stopPropagation();
           const formData = new FormData(e.target);
           const values = Object.fromEntries(formData);
-          handlerMap.removeMember(values.memberId);
+          handlerMap.addMember(values.userId);
+
           handleClose();
         }}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Remove member</Modal.Title>
+          <Modal.Title>Add member</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Label>Member</Form.Label>
-          <Form.Select type="select" name="memberId" required>
-            {userList.map((user) => {
-              return (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              );
-            })}
+          <Form.Select name="userId" required>
+            {userList.map((user) => (
+              <option key={user._id} value={user._id}>
+                {user.name}
+              </option>
+            ))}
           </Form.Select>
         </Modal.Body>
         <Modal.Footer>
@@ -44,4 +42,4 @@ function RemoveForm({ show, handleClose, userList, handlerMap }) {
   );
 }
 
-export default RemoveForm;
+export default AddForm;

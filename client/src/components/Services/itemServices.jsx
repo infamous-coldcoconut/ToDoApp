@@ -11,7 +11,7 @@ const addItem = (listId, data) => {
     resolved: false,
   };
 
-  return axios.post(SERVER_URL + `/${listId}/` + "addItem", itemData);
+  return axios.post(SERVER_URL + `/${listId}/` + "add", itemData);
 };
 
 const updateItem = (listId, itemId, data) => {
@@ -20,18 +20,21 @@ const updateItem = (listId, itemId, data) => {
     resolved: false,
   };
 
-  return axios.post(
-    SERVER_URL + `/${listId}/` + "/udpate" + `/${itemId}`,
-    itemData
-  );
+  return axios.post(SERVER_URL + `/${listId}/` + "/update" + `/${itemId}`, {
+    itemData,
+  });
 };
 
 const setItemResolved = (listId, itemId) => {
-  return axios.post(SERVER_URL + `/${listId}/` + `${itemId}`);
+  return axios.post(SERVER_URL + `/${listId}/resolved`, { itemId });
 };
 
 const deleteItem = (listId, itemId) => {
   return axios.post(SERVER_URL + `/${listId}/` + "/delete" + `${itemId}`);
+};
+
+const getUsers = (userId) => {
+  return axios.post("http://localhost:5050/user/get", { userId });
 };
 
 const ItemServices = {
@@ -40,6 +43,7 @@ const ItemServices = {
   updateItem,
   setItemResolved,
   deleteItem,
+  getUsers,
 };
 
 export default ItemServices;

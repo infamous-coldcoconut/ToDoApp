@@ -1,3 +1,4 @@
+import ShoppingList from "../../models/shoppingList.model.js";
 import User from "../../models/user.model.js";
 import { createUserSchema } from "../../validation/user.validation.js";
 
@@ -43,4 +44,18 @@ const loginUser = async (req, res) => {
   }
 };
 
-export { createUser, loginUser };
+const getUsers = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const users = await User.find({ _id: { $ne: userId } });
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export { createUser, loginUser, getUsers };

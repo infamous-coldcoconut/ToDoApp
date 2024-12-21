@@ -11,18 +11,19 @@ import { useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 
 import AddItemForm from "../Form/AddItemForm";
-import AddForm from "./AddForm";
-import RemoveForm from "./RemoveForm";
+import AddForm from "../Form/AddForm";
+import RemoveForm from "../Form/RemoveForm";
 import { UserContext } from "../User/UserProvider";
 import { ItemDetailContext } from "./ItemDetailProvider";
 
 function ItemDetailToolBar({
   shoppingList,
+  user,
   loggedInUser,
   handleAdd,
-  handleAddMember,
-  handleRemoveMember,
-  handleSelfRemove,
+  handleInvite,
+  handleRemove,
+  // handleSelfRemove,
   setShowResolved,
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -32,7 +33,8 @@ function ItemDetailToolBar({
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const listId = params.get("id");
-  const isOwner = shoppingList.owner === loggedInUser.id;
+
+  const isOwner = shoppingList.owner._id === loggedInUser.id;
 
   return (
     <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>
@@ -40,7 +42,6 @@ function ItemDetailToolBar({
         <Icon path={mdiPencilPlus} size={1} />
         Add item
       </Button>
-
       {isOwner && (
         <>
           <Button onClick={() => setShowAddModal(true)} variant="primary">
@@ -53,14 +54,12 @@ function ItemDetailToolBar({
           </Button>
         </>
       )}
-
       {!isOwner && (
         <Button onClick={() => handleSelfRemove(listId)} variant="danger">
           <Icon path={mdiAccountRemove} size={1} />
           Remove yourself from the list
         </Button>
       )}
-
       <Button
         variant="primary"
         onClick={() => {
@@ -70,42 +69,33 @@ function ItemDetailToolBar({
         <Icon path={mdiFilter} size={1} />
         Filter
       </Button>
-
-      {/* <AddForm
+      <AddForm
         show={showAddModal}
         handleClose={() => setShowAddModal(false)}
-        userList={userList}
+        userList={user}
         handlerMap={{
-          addMember: (user) =>
-            handleAddMember({ id: shoppingList.id, name: user }),
+          addMember: (userId) => {
+            handleInvite(userId);
+          },
         }}
-      /> */}
-
+      />
       <AddItemForm
         show={showAddItemModal}
         handleClose={() => setShowAddItemModal(false)}
         handlerMap={{
-          addItem: (item) => handleAdd(listId, item),
+          addItem: (item) => handleAdd(item),
         }}
       />
-
-      {/* <AddForm
-        show={showAddModal}
-        handleClose={() => setShowAddModal(false)}
-        userList={userList}
-        handlerMap={{
-          addMember: (user) => handleAddMember(listId, user),
-        }}
-      />
-
       <RemoveForm
         show={showRemoveModal}
         handleClose={() => setShowRemoveModal(false)}
-        userList={userList}
+        userList={user}
         handlerMap={{
-          removeMember: (user) => handleRemoveMember(listId, user),
+          removeMember: (userId) => {
+            handleRemove(userId);
+          },
         }}
-      /> */}
+      />
     </div>
   );
 }

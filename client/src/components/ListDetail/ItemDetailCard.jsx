@@ -7,12 +7,12 @@ function ItemDetailCard({
   handleDelete,
   handleResolved,
 }) {
-  // const handleCheckboxChange = (itemId) => {
-  //   toggleItemStatus(shoppingList.id, itemId);
-  // };
+  const handleCheckboxChange = (itemId) => {
+    handleResolved(itemId);
+  };
 
   return (
-    <div style={{ display: "flex", gap: "20px" }}>
+    <div style={{ display: "flex", gap: "20px", gridContainerStyle }}>
       <Card style={{ width: "30 rem" }}>
         <div>
           <Card.Body>
@@ -30,7 +30,7 @@ function ItemDetailCard({
                   <input
                     type="checkbox"
                     checked={item.resolved || false}
-                    onChange={() => handleCheckboxChange(item.id)}
+                    onChange={() => handleCheckboxChange(item._id)}
                   />
                   {item.name}
                 </div>

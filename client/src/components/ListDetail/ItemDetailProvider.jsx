@@ -22,6 +22,7 @@ function ItemDetailProvider() {
   const [filterOption, setFilterOption] = useState("Not resolved");
   const [items, setItems] = useState([]);
   const [shoppingList, setShoppingList] = useState(null);
+  const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const { id } = useParams();
@@ -47,15 +48,26 @@ function ItemDetailProvider() {
         console.error("Error fetching items", error);
       }
     };
+    const fetchUsersData = async () => {
+      try {
+        const res = await ItemServices.getUsers(loggedInUser.id);
+        setUser(res.data);
+      } catch (error) {
+        console.error("Error fetching items", error);
+      }
+    };
 
     fetchShoppingListData()
       .then(() => {
         return fetchItemsData();
       })
+      .then(() => {
+        return fetchUsersData();
+      })
       .finally(() => {
         setLoading(false);
       });
-  }, [loggedInUser, id]);
+  }, [id]);
 
   const filteredItems = useMemo(() => {
     if (filterOption === "all") {
@@ -69,8 +81,11 @@ function ItemDetailProvider() {
 
   const handleAdd = async (data) => {
     try {
-      const res = await ItemServices.addItem(id, data);
-      setItems((prevItems) => [...prevItems, res.data]);
+      await ItemServices.addItem(id, data);
+
+      const resItems = await ItemServices.getItems(id);
+
+      setItems(resItems.data);
     } catch (error) {
       console.log(error);
     }
@@ -78,10 +93,10 @@ function ItemDetailProvider() {
 
   const handleUpdate = async (data) => {
     try {
-      const res = await ItemServices.updateItem(data, id);
-      setItems((prevItems) =>
-        prevItems.map((item) => (item._id === res.data._id ? res.data : item))
-      );
+      await ItemServices.updateItem(id, data);
+
+      const resItems = await ItemServices.getItems(id);
+      setItems(resItems.data);
     } catch (error) {
       console.log(error);
     }
@@ -89,12 +104,10 @@ function ItemDetailProvider() {
 
   const handleResolved = async (data) => {
     try {
-      await ItemServices.setItemResolved(data, id);
-      setItems((prevItems) =>
-        prevItems.map((item) =>
-          item._id === data ? { ...item, resolved: !item.resolved } : item
-        )
-      );
+      await ItemServices.setItemResolved(id, data);
+
+      const resItems = await ItemServices.getItems(id);
+      setItems(resItems.data);
     } catch (error) {
       console.log(error);
     }
@@ -114,6 +127,41 @@ function ItemDetailProvider() {
       console.log(error);
     }
   };
+
+  const handleInvite = async (userId) => {
+    console.log("Inviting user with ID:", userId);
+    try {
+      setShoppingList((prevShoppingList) => ({
+        ...prevShoppingList,
+        memberList: [...prevShoppingList.memberList, userId],
+      }));
+
+      await ShoppingListServices.inviteUser(id, userId);
+
+      const res = await ShoppingListServices.getShoppingList(id);
+      setShoppingList(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleRemove = async (userId) => {
+    try {
+      setShoppingList((prevShoppingList) => ({
+        ...prevShoppingList,
+        memberList: prevShoppingList.memberList.filter(
+          (member) => member !== userId
+        ),
+      }));
+
+      await ShoppingListServices.removeUser(id, userId);
+
+      const res = await ShoppingListServices.getShoppingList(id);
+      setShoppingList(res.data);
+    } catch (error) {
+      console.error("Error removing user:", error);
+    }
+  };
+
   return (
     <ItemDetailContext.Provider
       value={{
@@ -137,8 +185,12 @@ function ItemDetailProvider() {
             handleAdd={handleAdd}
             handleUpdate={handleUpdate}
             handleDelete={handleDelete}
+            handleInvite={handleInvite}
+            handleRemove={handleRemove}
             showResolved={showResolved}
             setShowResolved={setShowResolved}
+            user={user}
+            setUser={setUser}
           />
           <ItemDetailCard
             filteredItems={filteredItems}

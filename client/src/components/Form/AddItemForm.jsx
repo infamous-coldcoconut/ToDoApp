@@ -11,10 +11,11 @@ function AddItemForm({ show, handleClose, handlerMap }) {
           e.stopPropagation();
           const formData = new FormData(e.target);
           const newItem = {
-            id: `item${Date.now()}`,
             name: formData.get("name"),
             resolved: false,
           };
+
+          console.log(newItem);
           handlerMap.addItem(newItem);
           handleClose();
         }}

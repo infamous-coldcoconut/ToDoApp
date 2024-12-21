@@ -1,10 +1,8 @@
 import Card from "react-bootstrap/Card";
 
 function UserCard({ shoppingList }) {
-  console.log("Member List:", shoppingList.memberList);
-
   return (
-    <div style={{ display: "flex", gap: "20px" }}>
+    <div style={{ display: "flex", gap: "20px", gridContainerStyle }}>
       <Card style={{ width: "30 rem" }}>
         <div>
           <Card.Body>
@@ -18,11 +16,11 @@ function UserCard({ shoppingList }) {
               }}
             >
               <div>
-                <strong>Owner:</strong> {shoppingList.owner}
+                <strong>Owner:</strong> {shoppingList.owner.name}
               </div>
               {shoppingList.memberList.length > 0 ? (
                 shoppingList.memberList.map((user, index) => (
-                  <div key={index}>{user.name}</div>
+                  <div key={index}> {user.name}</div>
                 ))
               ) : (
                 <div>No members</div>
@@ -34,5 +32,14 @@ function UserCard({ shoppingList }) {
     </div>
   );
 }
+
+const gridContainerStyle = {
+  display: "grid",
+  padding: "20px",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gap: "16px",
+  maxWidth: "960px",
+  margin: "0 auto",
+};
 
 export default UserCard;
