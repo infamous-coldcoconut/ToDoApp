@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import "./index.css";
 import App from "./App.jsx";
-import Landing from "./Landing.jsx";
+import "./i18n";
 
 import * as React from "react";
 import * as ReactDom from "react-dom/client";
@@ -48,9 +48,7 @@ const router = createBrowserRouter([
 ReactDom.createRoot(document.getElementById("root")).render(
   <StrictMode>
     <UserProvider>
-      {/* <ListDetailProvider> */}
       <RouterProvider router={router} />
-      {/* </ListDetailProvider> */}
     </UserProvider>
   </StrictMode>
 );

@@ -9,7 +9,7 @@ export const OverviewContext = createContext();
 function OverviewProvider() {
   const [showArchive, setShowArchive] = useState();
   const { loggedInUser } = useContext(UserContext);
-  const [filterOption, setFilterOption] = useState("all");
+  const [filterOption, setFilterOption] = useState("active");
   const [shoppingLists, setShoppingLists] = useState([]);
 
   useEffect(() => {

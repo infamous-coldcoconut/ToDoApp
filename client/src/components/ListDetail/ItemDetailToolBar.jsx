@@ -24,7 +24,6 @@ function ItemDetailToolBar({
   handleInvite,
   handleRemove,
   // handleSelfRemove,
-  setShowResolved,
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
@@ -60,15 +59,6 @@ function ItemDetailToolBar({
           Remove yourself from the list
         </Button>
       )}
-      <Button
-        variant="primary"
-        onClick={() => {
-          setShowResolved((current) => !current);
-        }}
-      >
-        <Icon path={mdiFilter} size={1} />
-        Filter
-      </Button>
       <AddForm
         show={showAddModal}
         handleClose={() => setShowAddModal(false)}

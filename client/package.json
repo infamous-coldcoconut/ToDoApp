@@ -13,8 +13,13 @@
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.7",
+    "i18n": "^0.15.1",
+    "i18next": "^24.2.0",
     "react-bootstrap": "^2.10.5",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
+    "react-i18next": "^15.2.0",
     "react-router-dom": "^6.28.0"
   },
   "devDependencies": {

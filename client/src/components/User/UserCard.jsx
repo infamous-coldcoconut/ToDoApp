@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 function UserCard({ shoppingList }) {
   return (
     <div style={{ display: "flex", gap: "20px", gridContainerStyle }}>
-      <Card style={{ width: "30 rem" }}>
+      <Card style={{ width: "20rem", height: "25rem" }}>
         <div>
           <Card.Body>
             <h1>Users</h1>

@@ -11,7 +11,8 @@ import UserCard from "../User/UserCard";
 import { UserContext } from "../User/UserProvider";
 import ShoppingListServices from "../Services/shoppingListServices";
 import ItemServices from "../Services/itemServices";
-import AuthServices from "../Services/authServices";
+import ItemChart from "./ItemChart";
+
 import { useParams } from "react-router-dom";
 
 export const ItemDetailContext = createContext();
@@ -70,14 +71,11 @@ function ItemDetailProvider() {
   }, [id]);
 
   const filteredItems = useMemo(() => {
-    if (filterOption === "all") {
-      return items;
-    } else if (filterOption === "resolved") {
-      return items.filter((item) => item.resolved === true);
-    } else if (filterOption === "Not resolved") {
-      return items.filter((item) => item.resolved === false);
-    }
-  }, [filterOption, items]);
+    return items.map((item) => ({
+      ...item,
+      crossedOut: item.resolved,
+    }));
+  }, [items]);
 
   const handleAdd = async (data) => {
     try {
@@ -104,6 +102,12 @@ function ItemDetailProvider() {
 
   const handleResolved = async (data) => {
     try {
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item._id === data ? { ...item, resolved: !item.resolved } : item
+        )
+      );
+
       await ItemServices.setItemResolved(id, data);
 
       const resItems = await ItemServices.getItems(id);
@@ -177,35 +181,41 @@ function ItemDetailProvider() {
       }}
     >
       {!loading && shoppingList && items ? (
-        <>
+        <div>
           <ItemDetailToolBar
             shoppingList={shoppingList}
-            id={id}
             loggedInUser={loggedInUser}
             handleAdd={handleAdd}
-            handleUpdate={handleUpdate}
-            handleDelete={handleDelete}
             handleInvite={handleInvite}
             handleRemove={handleRemove}
-            showResolved={showResolved}
-            setShowResolved={setShowResolved}
             user={user}
-            setUser={setUser}
           />
-          <ItemDetailCard
-            filteredItems={filteredItems}
-            shoppingList={shoppingList}
-            handleUpdate={handleUpdate}
-            handleDelete={handleDelete}
-            handleResolved={handleResolved}
-          />
-          <UserCard shoppingList={shoppingList} />
-        </>
+          <div style={gridContainerStyle}>
+            <ItemDetailCard
+              filteredItems={filteredItems}
+              shoppingList={shoppingList}
+              handleUpdate={handleUpdate}
+              handleDelete={handleDelete}
+              handleResolved={handleResolved}
+            />
+            <UserCard shoppingList={shoppingList} />
+            <ItemChart items={items} />
+          </div>
+        </div>
       ) : (
         <p>Loading...</p>
       )}
     </ItemDetailContext.Provider>
   );
 }
+
+const gridContainerStyle = {
+  display: "grid",
+  padding: "10px",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gap: "16px",
+  maxWidth: "1200px",
+  margin: "0 auto",
+};
 
 export default ItemDetailProvider;

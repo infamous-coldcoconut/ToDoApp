@@ -12,8 +12,8 @@ function ItemDetailCard({
   };
 
   return (
-    <div style={{ display: "flex", gap: "20px", gridContainerStyle }}>
-      <Card style={{ width: "30 rem" }}>
+    <div style={{ display: "grid" }}>
+      <Card style={{ width: "20rem", height: "25rem" }}>
         <div>
           <Card.Body>
             <h1>{shoppingList.name}</h1>
@@ -26,13 +26,27 @@ function ItemDetailCard({
               }}
             >
               {filteredItems.map((item) => (
-                <div key={item._id}>
+                <div
+                  key={item._id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={item.resolved || false}
                     onChange={() => handleCheckboxChange(item._id)}
                   />
-                  {item.name}
+
+                  <span
+                    style={{
+                      textDecoration: item.crossedOut ? "line-through" : "none",
+                    }}
+                  >
+                    {item.name}
+                  </span>
                 </div>
               ))}
             </div>
@@ -42,14 +56,5 @@ function ItemDetailCard({
     </div>
   );
 }
-
-const gridContainerStyle = {
-  display: "grid",
-  padding: "20px",
-  gridTemplateColumns: "repeat(3, 1fr)",
-  gap: "16px",
-  maxWidth: "960px",
-  margin: "0 auto",
-};
 
 export default ItemDetailCard;

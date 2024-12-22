@@ -1,5 +1,7 @@
-import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
-import React, { useState, useContext, useEffect } from "react";
+import { Navbar, Nav, NavDropdown, Container, Dropdown } from "react-bootstrap";
+import React, { useState, useContext } from "react";
+import { useTranslation } from "react-i18next";
+
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../User/UserProvider";
 import Icon from "@mdi/react";
@@ -26,6 +28,12 @@ function NavBar() {
     htmlElement.setAttribute("data-bs-theme", darkMode ? "dark" : "light");
   };
 
+  const { t, i18n } = useTranslation();
+  const lngs = {
+    en: { nativeName: "English", shortName: "en" },
+    cs: { nativeName: "Čeština", shortName: "cs" },
+  };
+
   return (
     <div className={`App ${darkMode ? "theme-dark" : "theme-light"}`}>
       <Navbar className="navbar bg-body-tertiary">
@@ -33,6 +41,20 @@ function NavBar() {
           <Navbar.Brand href="/">ToDoApp</Navbar.Brand>
           <Navbar.Collapse className="justify-content-end">
             <Nav className="ml-auto">
+              <NavDropdown
+                title={lngs[i18n.resolvedLanguage].shortName}
+                id="basic-nav-dropdown"
+              >
+                {Object.keys(lngs).map((lng) => (
+                  <Dropdown.Item
+                    key={lng}
+                    active={i18n.resolvedLanguage === lng}
+                    onClick={() => i18n.changeLanguage(lng)}
+                  >
+                    {lngs[lng].nativeName}
+                  </Dropdown.Item>
+                ))}
+              </NavDropdown>
               <Navbar.Brand>
                 <Icon
                   path={darkMode ? mdiToggleSwitchOffOutline : mdiToggleSwitch}
