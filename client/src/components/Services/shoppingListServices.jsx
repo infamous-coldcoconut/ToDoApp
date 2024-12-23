@@ -49,6 +49,7 @@ const inviteUser = (listId, userId) => {
 const removeUser = (listId, userId) => {
   return axios.post(SERVER_URL + `/${listId}/remove`, { userId });
 };
+
 const ShoppingListServices = {
   getShoppingLists,
   getShoppingList,

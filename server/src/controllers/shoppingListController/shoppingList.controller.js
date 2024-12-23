@@ -178,73 +178,6 @@ const removeUser = async (req, res) => {
   }
 };
 
-const removeYourSelf = async (req, res) => {
-  try {
-    const { listId } = req.params;
-    const { userId } = req.body;
-
-    const shoppingList = await ShoppingList.findById(listId);
-    if (!shoppingList) {
-      return res.status(404).json({ message: "Shopping list not found" });
-    }
-
-    const index = shoppingList.memberList.indexOf(userId);
-    if (index === -1) {
-      return res.status(404).json({ message: "User not in the member list" });
-    }
-
-    shoppingList.memberList.splice(index, 1);
-    await shoppingList.save();
-
-    res.status(200).json({
-      message: "You have successfully removed yourself from the shopping list",
-      shoppingList,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// const removeUserOrYourself = async (req, res) => {
-//   try {
-//     const { listId } = req.params;
-//     let { userId } = req.body;
-
-//     const shoppingList = await ShoppingList.findById(listId);
-//     if (!shoppingList) {
-//       return res.status(404).json({ message: "Shopping list not found" });
-//     }
-
-//     if (!userId || shoppingList.owner !== req.body.currentUserId) {
-//       userId = req.body.currentUserId;
-//     }
-
-//     if (!shoppingList.memberList.includes(userId)) {
-//       return res
-//         .status(400)
-//         .json({ message: "User is not a member of this list" });
-//     }
-
-//     // Remove the user
-//     const index = shoppingList.memberList.indexOf(userId);
-//     if (index === -1) {
-//       return res.status(404).json({ message: "User not in the member list" });
-//     }
-
-//     shoppingList.memberList.splice(index, 1);
-//     await shoppingList.save();
-
-//     const message =
-//       userId === req.body.currentUserId
-//         ? "You have successfully removed yourself from the shopping list"
-//         : "User removed successfully";
-
-//     res.status(200).json({ message, shoppingList });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
 export {
   createShoppingList,
   getShoppingLists,
@@ -254,5 +187,4 @@ export {
   deleteShoppingList,
   inviteUser,
   removeUser,
-  removeYourSelf,
 };

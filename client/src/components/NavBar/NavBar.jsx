@@ -38,7 +38,7 @@ function NavBar() {
     <div className={`App ${darkMode ? "theme-dark" : "theme-light"}`}>
       <Navbar className="navbar bg-body-tertiary">
         <Container>
-          <Navbar.Brand href="/">ToDoApp</Navbar.Brand>
+          <Navbar.Brand href="/">{t("navbar.appName")}</Navbar.Brand>
           <Navbar.Collapse className="justify-content-end">
             <Nav className="ml-auto">
               <NavDropdown

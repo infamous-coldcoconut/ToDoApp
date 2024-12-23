@@ -6,15 +6,13 @@ import {
   mdiFilter,
 } from "@mdi/js";
 import Button from "react-bootstrap/Button";
-import { useState, useContext } from "react";
+import { useState } from "react";
 
-import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import AddItemForm from "../Form/AddItemForm";
 import AddForm from "../Form/AddForm";
 import RemoveForm from "../Form/RemoveForm";
-import { UserContext } from "../User/UserProvider";
-import { ItemDetailContext } from "./ItemDetailProvider";
 
 function ItemDetailToolBar({
   shoppingList,
@@ -23,15 +21,11 @@ function ItemDetailToolBar({
   handleAdd,
   handleInvite,
   handleRemove,
-  // handleSelfRemove,
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
-
-  const { search } = useLocation();
-  const params = new URLSearchParams(search);
-  const listId = params.get("id");
+  const { t, i18n } = useTranslation();
 
   const isOwner = shoppingList.owner._id === loggedInUser.id;
 
@@ -39,24 +33,24 @@ function ItemDetailToolBar({
     <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>
       <Button onClick={() => setShowAddItemModal(true)} variant="primary">
         <Icon path={mdiPencilPlus} size={1} />
-        Add item
+        {t("itemToolbar.add")}
       </Button>
       {isOwner && (
         <>
           <Button onClick={() => setShowAddModal(true)} variant="primary">
             <Icon path={mdiAccountPlus} size={1} />
-            Add member
+            {t("itemToolbar.addmember")}
           </Button>
           <Button onClick={() => setShowRemoveModal(true)} variant="danger">
             <Icon path={mdiAccountRemove} size={1} />
-            Remove member
+            {t("itemToolbar.removemember")}
           </Button>
         </>
       )}
       {!isOwner && (
-        <Button onClick={() => handleSelfRemove(listId)} variant="danger">
+        <Button onClick={() => handleRemove(loggedInUser.id)} variant="danger">
           <Icon path={mdiAccountRemove} size={1} />
-          Remove yourself from the list
+          {t("itemToolbar.removeuser")}
         </Button>
       )}
       <AddForm

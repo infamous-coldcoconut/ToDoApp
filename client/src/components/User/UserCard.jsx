@@ -1,12 +1,15 @@
 import Card from "react-bootstrap/Card";
+import { useTranslation } from "react-i18next";
 
 function UserCard({ shoppingList }) {
+  const { t, i18n } = useTranslation();
+
   return (
     <div style={{ display: "flex", gap: "20px", gridContainerStyle }}>
       <Card style={{ width: "20rem", height: "25rem" }}>
         <div>
           <Card.Body>
-            <h1>Users</h1>
+            <h1>{t("user.users")}</h1>
             <div
               style={{
                 display: "grid",
@@ -16,14 +19,14 @@ function UserCard({ shoppingList }) {
               }}
             >
               <div>
-                <strong>Owner:</strong> {shoppingList.owner.name}
+                <strong>{t("user.owner")}:</strong> {shoppingList.owner.name}
               </div>
               {shoppingList.memberList.length > 0 ? (
                 shoppingList.memberList.map((user, index) => (
                   <div key={index}> {user.name}</div>
                 ))
               ) : (
-                <div>No members</div>
+                <div>{t("user.members")}</div>
               )}
             </div>
           </Card.Body>

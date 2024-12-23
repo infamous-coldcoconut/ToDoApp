@@ -4,12 +4,50 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   en: {
     translation: {
-      "Welcome to React": "Welcome to React and react-i18next",
+      navbar: {
+        appName: "ToDo App",
+      },
+      overviewToolbar: {
+        create: "create",
+        all: "all",
+        active: "active",
+        archived: "archived",
+      },
+      itemToolbar: {
+        add: "add",
+        addmember: "Add a member",
+        removemember: "Remove a member",
+        removeuser: "Remove yourself",
+      },
+      user: {
+        users: "Members",
+        owner: "owner",
+        members: "No members",
+      },
     },
   },
   cs: {
     translation: {
-      "Welcome to React": "Bienvenue à React et react-i18next",
+      navbar: {
+        appName: "Aplikační Úkolovník",
+      },
+      overviewToolbar: {
+        create: "vytvořit",
+        all: "vše",
+        active: "aktivní",
+        archived: "archivované",
+      },
+      itemToolbar: {
+        add: "Přidat",
+        addmember: "Přidat člena",
+        removemember: "Vykopnout člena",
+        removeuser: "Vykouknu se sám",
+      },
+      user: {
+        users: "Účastníci",
+        owner: "Vlastník",
+        members: "Žádné účastníci",
+      },
     },
   },
 };

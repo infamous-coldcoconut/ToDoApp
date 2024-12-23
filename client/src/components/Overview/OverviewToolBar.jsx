@@ -4,7 +4,7 @@ import Button from "react-bootstrap/esm/Button.js";
 import Dropdown from "react-bootstrap/Dropdown";
 import Addlist from "../Form/AddList";
 import { useState } from "react";
-import ShoppingListServices from "../Services/shoppingListServices";
+import { useTranslation } from "react-i18next";
 
 function OverviewToolBar({
   handleCreate,
@@ -15,6 +15,7 @@ function OverviewToolBar({
   setFilterOption,
 }) {
   const [showAddListModal, setShowAddListModal] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const handleFilterSelect = (selected) => {
     setFilterOption(selected);
@@ -24,21 +25,21 @@ function OverviewToolBar({
     <div style={{ display: "flex", justifyContent: "flex-start", gap: "10px" }}>
       <Button variant="primary" onClick={() => setShowAddListModal(true)}>
         <Icon path={mdiPlus} size={1} />
-        Create
+        {t("overviewToolbar.create")}
       </Button>
       <Dropdown>
         <Dropdown.Toggle variant="success" id="dropdown-basic">
-          {filterOption}
+          {t(`overviewToolbar.${filterOption}`)}
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item onClick={() => handleFilterSelect("all")}>
-            All
+            {t("overviewToolbar.all")}
           </Dropdown.Item>
           <Dropdown.Item onClick={() => handleFilterSelect("active")}>
-            Active only
+            {t("overviewToolbar.active")}
           </Dropdown.Item>
           <Dropdown.Item onClick={() => handleFilterSelect("archived")}>
-            Archived only
+            {t("overviewToolbar.archived")}
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

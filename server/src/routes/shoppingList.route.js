@@ -9,7 +9,6 @@ import {
   deleteShoppingList,
   inviteUser,
   removeUser,
-  removeYourSelf,
 } from "../controllers/shoppingListController/shoppingList.controller.js";
 const router = express.Router();
 
@@ -22,6 +21,5 @@ router.post("/delete/:id", deleteShoppingList);
 
 router.post("/:listId/invite", inviteUser);
 router.post("/:listId/remove", removeUser);
-router.post("/:listId/remove", removeYourSelf);
 
 export default router;
